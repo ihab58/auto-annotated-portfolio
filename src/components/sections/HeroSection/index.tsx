@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Markdown from 'markdown-to-jsx';
 import classNames from 'classnames';
 
@@ -14,12 +15,18 @@ export default function Component(props: HeroSection) {
     const containerRef = React.useRef<HTMLDivElement>(null);
     React.useEffect(() => {
         if (containerRef.current) {
+            gsap.registerPlugin(ScrollTrigger);
             gsap.from(containerRef.current.children, {
                 opacity: 0,
                 y: 50,
                 duration: 1,
-                stagger: 0.2
+                stagger: 0.2,
+                scrollTrigger: {
+                    trigger: containerRef.current,
+                    start: 'top bottom'
+                }
             });
+            ScrollTrigger.refresh();
         }
     }, []);
     const { type, elementId, colors, backgroundSize, title, subtitle, text, media, actions = [], styles = {} } = props;
