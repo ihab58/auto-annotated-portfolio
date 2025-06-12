@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { gsap } from 'gsap';
 import Markdown from 'markdown-to-jsx';
 import classNames from 'classnames';
 
@@ -10,12 +11,24 @@ import { AnnotatedField } from '@/components/Annotated';
 import { Button, HeroSection, Link } from '@/types';
 
 export default function Component(props: HeroSection) {
+    const containerRef = React.useRef<HTMLDivElement>(null);
+    React.useEffect(() => {
+        if (containerRef.current) {
+            gsap.from(containerRef.current.children, {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                stagger: 0.2
+            });
+        }
+    }, []);
     const { type, elementId, colors, backgroundSize, title, subtitle, text, media, actions = [], styles = {} } = props;
     const sectionFlexDirection = styles.self?.flexDirection ?? 'row';
     const sectionAlignItems = styles.self?.alignItems ?? 'center';
     return (
         <Section type={type} elementId={elementId} colors={colors} backgroundSize={backgroundSize} styles={styles.self}>
             <div
+                ref={containerRef}
                 className={classNames('flex', mapFlexDirectionStyles(sectionFlexDirection), mapStyles({ alignItems: sectionAlignItems }), 'space-y-8', {
                     'lg:space-y-0 lg:space-x-8': sectionFlexDirection === 'row',
                     'space-y-reverse lg:space-y-0 lg:space-x-8 lg:space-x-reverse': sectionFlexDirection === 'row-reverse',
